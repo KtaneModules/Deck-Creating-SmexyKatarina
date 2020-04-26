@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 615501dbe4f3fe94fbf4b564abb10237, type: 3}
+  m_Name: ModConfig
+  m_EditorClassIdentifier: 
+  id: kataDeckCreating
+  title: Deck Creating
+  author: Katarina
+  description: "Deck Creating v1.0\n\u201CWhy are you trying to make the lastest meta
+    deck? We\u2019re defusing a bomb!!\u201D\n\nModule Idea by: SuDo\nImplemented
+    by: Kat(arina)\n\nTP-Supported.\n\nHTML Manual Version:\r\nhttps://ktane.timwi.de/HTML/Deck%20Creating.html\r\n\r\nIf
+    there are any problems that you may have, contact me via Discord: Smexy Ahri#5259\n"
+  version: 1.0
+  outputFolder: build
+  previewImage: {fileID: 2800000, guid: 8930c788cc110f44c8fe561bf12b262c, type: 3}

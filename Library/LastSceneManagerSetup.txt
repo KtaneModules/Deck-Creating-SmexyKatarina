@@ -1,0 +1,4 @@
+sceneSetups:
+- path: Assets/Module/deckCreating.unity
+  isLoaded: 1
+  isActive: 1
