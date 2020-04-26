@@ -15,6 +15,7 @@ public class DeckCreatingScript : MonoBehaviour {
 	public SpriteRenderer[] _cardRenderers;
 	public KMSelectable[] _cardSelectors;
 	public TextMesh _cardCounter;
+	public TextMesh _cardName;
 	public Sprite[] _cardBackings;
 
 	// Hearthstone
@@ -100,8 +101,13 @@ public class DeckCreatingScript : MonoBehaviour {
 	void Awake() {
 		_modID = _modIDCount++;
 
+		int count = 0;
 		foreach (KMSelectable km in _cardSelectors) {
 			km.OnInteract += delegate () { if (_isAnimating) { return false; } if (_modSolved) { return false; } CardCheck(km); return false; };
+			if (count != 3) {
+				km.OnHighlight += delegate () { if (_isAnimating) { return; } HighlightName(km); return; };
+				km.OnHighlightEnded += delegate () { if (_isAnimating) { return; } _cardName.text = ""; return; };
+			}
 		}
 	}
 
@@ -129,6 +135,23 @@ public class DeckCreatingScript : MonoBehaviour {
 		}
 		PrintDebug("Correct card selected, generating new set of cards{0}", new object[] { "." });
 		StartCoroutine(GenerateNewCards());
+	}
+
+	void HighlightName(KMSelectable button) {
+		int index = Array.IndexOf(_cardSelectors, button);
+		switch (index) {
+			case 0:
+				_cardName.text = _cardRenderers[0].sprite.name;
+				break;
+			case 1:
+				_cardName.text = _cardRenderers[1].sprite.name;
+				break;
+			case 2:
+				_cardName.text = _cardRenderers[2].sprite.name;
+				break;
+			default:
+				break;
+		}
 	}
 
 	void StartModule() {
