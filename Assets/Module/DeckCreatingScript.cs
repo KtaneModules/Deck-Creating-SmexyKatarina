@@ -65,7 +65,7 @@ public class DeckCreatingScript : MonoBehaviour {
 		// Hearthstone
 		new int[] { 1, 1, 2, 2, 1, 2, 1, 1, 2, 1, 2, 1, 2, 2, 2, 2, 2, 2, 1 }, // Aviana Druid 30
 		new int[] { 1, 1, 2, 1, 1, 2, 2, 2, 1, 1, 2, 2, 2, 1, 1, 1, 2, 2, 2, 1 }, // Control Warrior 30
-		new int[] { 2, 2, 2, 2, 1, 2, 2, 1, 2, 2, 1, 1, 2, 2, 2, 2, 2, 2 }, // Face Hunter 30
+		new int[] { 2, 2, 2, 2, 1, 2, 2, 1, 2, 2, 1, 1, 2, 2, 2, 2, 2 }, // Face Hunter 30
 		new int[] { 2, 2, 1, 2, 2, 1, 2, 2, 2, 1, 2, 2, 2, 2, 2, 1, 2 }, // Miracle Rogue 30
 		// MTG
 		new int[] { 1, 1, 1, 2, 2, 13, 1, 1, 1, 1, 1, 1, 2, 1, 1 }, // Blue 30
