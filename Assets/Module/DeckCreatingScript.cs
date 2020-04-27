@@ -544,6 +544,7 @@ public class DeckCreatingScript : MonoBehaviour {
 		_correctCard = rPos;
 		List<Sprite> sprites = new List<Sprite>();
 		List<int> indices = new List<int>();
+		List<string> usedSprite = new List<string>();
 		for (int i = 0; i <= 2; i++) {
 			if (cPos[i]) { continue; }
 			sprites.Clear();
@@ -563,9 +564,15 @@ public class DeckCreatingScript : MonoBehaviour {
 				counter++;
 			}
 			foreach (Sprite s in randomSpr) {
+				if (usedSprite.Contains(s.name)) { continue; }
 				sprites.Add(s);
 			}
+			int rando = rnd.Range(0, sprites.Count);
+			while (usedSprite.Contains(sprites.ElementAt(rando).name)) {
+				rando = rnd.Range(0, sprites.Count);
+			}
 			_cardRenderers[i].sprite = sprites.ElementAt(rnd.Range(0, sprites.Count));
+			usedSprite.Add(_cardRenderers[i].sprite.name);
 		}
 		PrintDebug("Out of cards on set {0}, the correct card is {1} ({2}).", new object[] { _cardSet + 1, rPos + 1, _chosenDeckSprites[rand].name });
 		_cardCounter.text = (_cardSet + 1).ToString();
