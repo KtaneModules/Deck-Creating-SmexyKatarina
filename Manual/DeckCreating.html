@@ -64,19 +64,19 @@
 						<li>Take the rightmost letter of the serial number and convert it to it to its alphanumeric value. (Ex. A -> 1, B -> 2... Z -> 26)</li>
 						<li>Multiply this number by the amount of unlit indicators.</li>
 						<li>If there is an RCA port, double the number <span style="text-decoration: underline;">BUT</span> if you have a Serial port, ignore this rule.</li>
-						<li>Add/Subtract 4 until in range of 1-4. This will be the <span style="text-decoration: underline;">numerator</span> of the fraction.</li>
+						<li>Modulo this number by 4. This will be the <span style="text-decoration: underline;">numerator</span> of the fraction.</li>
 						<br>
 						<li>Convert every letter in the serial number to its respective alphanumeric value and add them up. Then, add this number to the sum of the numbers in the serial number.</li>
-						<li>Add/Subtract 4 until in range of 1-4. This will be the <span style="text-decoration: underline;">denominator</span> of the fraction.</li>
+						<li>Modulo this number by 4. This will be the <span style="text-decoration: underline;">denominator</span> of the fraction.</li>
 					</ul>
 					<p><strong>If the bomb has more lit indicators than unlit indicators:</strong></p>
 					<ul>
 						<li>Start by taking the amount of lit indicators + 6. Then, add the number of port plates.</li>
-						<li>Add/Subtract 4 until in range of 1-4. This will be the <span style="text-decoration: underline;">numerator</span> of the fraction.</li>
+						<li>Modulo this number by 4. This will be the <span style="text-decoration: underline;">numerator</span> of the fraction.</li>
 						<br>
 						<li>Take the number of indicators that share a letter with the name of the card game. Then, add the last digit of the serial number.</li>
 						<li>Add (# of batteries * 3). Additionally, if there is a Monsplode Fight or Monsplode Trading Cards module on the bomb, add 13.</li>
-						<li>Add/Subtract 4 until in range of 1-4. This will be the <span style="text-decoration: underline;">denominator</span> of the fraction.</li>
+						<li>Modulo this number by 4. This will be the <span style="text-decoration: underline;">denominator</span> of the fraction.</li>
 					</ul>
                 </div>
                 <div class="page-footer relative-footer">Page 2 of 7</div>
@@ -92,7 +92,7 @@
 					<ul>
 						<li>Start with the (# of batteries * (# ports + # of port plates)) * √2. Take this all over √2.</li>
 						<li>Reduce this fraction to its lowest form.</li>
-						<li>Add/Subtract 4 from both sides until in range of 1-4. This will be the <span style="text-decoration: underline;">numerator and denominator</span> of the fraction.</li>
+						<li>Modulo this number by 4. This will be the <span style="text-decoration: underline;">numerator and denominator</span> of the fraction.</li>
 					</ul>
 					<p><strong>HOWEVER, if you have an equal amount of batteries and holders, as well an lit/unlit BOB indicator; the deck selected is going to be Exoida Mage.</strong></p>
 					
@@ -105,34 +105,34 @@
 					<table width="100%" class="tableTd">
 						<tr>
 							<th>Values</th>
+							<th>0</th>
 							<th>1</th>
 							<th>2</th>
 							<th>3</th>
-							<th>4</th>
 						</tr>
 						<tr>
-							<th>1</th>
+							<th>0</th>
 							<td>13.5</td>
 							<td>14.2</td>
 							<td>14.2</td>
 							<td>2</td>
 						</tr>
 						<tr>
-							<th>2</th>
+							<th>1</th>
 							<td>14.2</td>
 							<td>102</td>
 							<td>2</td>
 							<td>102</td>
 						</tr>
 						<tr>
-							<th>3</th>
+							<th>2</th>
 							<td>2</td>
 							<td>13.5</td>
 							<td>102</td>
 							<td>2</td>
 						</tr>
 						<tr>
-							<th>4</th>
+							<th>3</th>
 							<td>14.2</td>
 							<td>2</td>
 							<td>102</td>

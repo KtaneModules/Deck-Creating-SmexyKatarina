@@ -179,9 +179,9 @@ public class DeckCreatingScript : MonoBehaviour {
 
 			return;
 		}
-
+		int top = 0;
+		int bot = 0;
 		if (_bomb.GetOffIndicators().Count() > _bomb.GetOnIndicators().Count()) {
-			int top = 0;
 			if (_bomb.GetSerialNumberLetters().Count() == 0) {
 				top = 1 * _bomb.GetOffIndicators().Count();
 			} else {
@@ -191,19 +191,18 @@ public class DeckCreatingScript : MonoBehaviour {
 				top *= 2;
 			}
 			top %= 4;
-			top++;
-			int bot = (GetSumOfSNum() % 4) + 1;
-			_chosenCardValue = _valuesTable[top - 1][bot - 1];
+			bot = (GetSumOfSNum() % 4);
+			_chosenCardValue = _valuesTable[top][bot];
 		} else if (_bomb.GetOffIndicators().Count() < _bomb.GetOnIndicators().Count()) {
-			int top = ((_bomb.GetOnIndicators().Count() + _bomb.GetPortPlateCount() + 6) % 4) + 1;
-			int bot = ((IndiInString(_chosenCardName, true) + IndiInString(_chosenCardName, false) + _bomb.GetBatteryCount() + (ModuleOnBomb("monsplodeCards") || ModuleOnBomb("monsplodeFight") ? 13 : 0)) % 4) + 1;
-			_chosenCardValue = _valuesTable[top - 1][bot - 1];
+			top = ((_bomb.GetOnIndicators().Count() + _bomb.GetPortPlateCount() + 6) % 4);
+			bot = ((IndiInString(_chosenCardName, true) + IndiInString(_chosenCardName, false) + _bomb.GetBatteryCount() + (ModuleOnBomb("monsplodeCards") || ModuleOnBomb("monsplodeFight") ? 13 : 0)) % 4);
+			_chosenCardValue = _valuesTable[top][bot];
 		} else if (_bomb.GetOffIndicators().Count() == _bomb.GetOnIndicators().Count()) {
-			int top = ((_bomb.GetBatteryCount() * (_bomb.GetPortCount() + _bomb.GetPortPlateCount())) % 4) + 1;
-			int bot = 1;
-			_chosenCardValue = _valuesTable[top - 1][bot - 1];
+			top = ((_bomb.GetBatteryCount() * (_bomb.GetPortCount() + _bomb.GetPortPlateCount())) % 4);
+			bot = 0;
+			_chosenCardValue = _valuesTable[top][bot];
 		}
-		PrintDebug("The chosen value (from table 1) is: {0}.", new string[] { _chosenCardValue.ToString() });
+		PrintDebug("The chosen value (from table 1) is: {0} (Row = {1}, Column = {2}).", new object[] { _chosenCardValue.ToString(), top, bot });
 		GenerateDeck();
 	}
 
@@ -445,7 +444,7 @@ public class DeckCreatingScript : MonoBehaviour {
 	}
 
 	int AlphaPosition(char c) {
-		return "abcdefghijklmnopqrstuvwxyz".IndexOf(c) + 1;
+		return "abcdefghijklmnopqrstuvwxyz".IndexOf(c.ToString().ToLowerInvariant()) + 1;
 	}
 
 	int GetSumOfSNum() {
