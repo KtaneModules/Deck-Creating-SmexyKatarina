@@ -59,6 +59,7 @@ public class DeckCreatingScript : MonoBehaviour {
 	bool timer;
 	bool _isAnimating;
 	bool _starting;
+	bool _notFirst;
 
 	int[][] _deckCards = new int[][]
 	{
@@ -100,13 +101,12 @@ public class DeckCreatingScript : MonoBehaviour {
 
 	void Awake() {
 		_modID = _modIDCount++;
-
 		int count = 0;
 		foreach (KMSelectable km in _cardSelectors) {
-			km.OnInteract += delegate () { if (_isAnimating) { return false; } if (_modSolved) { return false; } CardCheck(km); return false; };
+			km.OnInteract += delegate () { if (_isAnimating || _modSolved) { return false; } CardCheck(km); return false; };
 			if (count != 3) {
-				km.OnHighlight += delegate () { if (_isAnimating) { return; } HighlightName(km); return; };
-				km.OnHighlightEnded += delegate () { if (_isAnimating) { return; } _cardName.text = ""; return; };
+				km.OnHighlight += delegate () { if (_isAnimating || _modSolved) { return; } HighlightName(km); return; };
+				km.OnHighlightEnded += delegate () { if (_isAnimating || _modSolved) { return; } _cardName.text = ""; return; };
 			}
 		}
 	}
@@ -134,7 +134,13 @@ public class DeckCreatingScript : MonoBehaviour {
 			return;
 		}
 		PrintDebug("Correct card selected, generating new set of cards{0}", new object[] { "." });
-		StartCoroutine(GenerateNewCards());
+		foreach (SpriteRenderer sr in _cardRenderers) {
+			sr.sprite = null;
+			sr.transform.localScale = GetSpriteSize();
+		}
+		_cardName.text = "";
+		_notFirst = true;
+		StartCoroutine(GenerateNewSet());
 	}
 
 	void HighlightName(KMSelectable button) {
@@ -167,13 +173,15 @@ public class DeckCreatingScript : MonoBehaviour {
 	void GenerateValue() {
 		if ((_bomb.GetBatteryCount() == _bomb.GetBatteryHolderCount()) && _bomb.GetIndicators().Any(x => x.Equals("BOB"))) {
 			_chosenCardDeck = "Exodia Mage";
-			_chosenCardName = "Hearthstone";
 			_chosenCardGame = 0;
 			_chosenDeckSprites = _exodiaMage;
 			_chosenCardValue = 42069;
 			_chosenDeckArray = _deckCards[12];
 			_chosenDeckIndex = 12;
-			PrintDebug("The chosen game has been changed to: {0}", new object[] { _chosenCardName });
+			if (_chosenCardName != "Hearthstone") {
+				PrintDebug("The chosen game has been changed to: Heartstone{0}", new object[] { "." });
+				_chosenCardName = "Hearthstone";
+			}
 			PrintDebug("The chosen value is: {0}.", new string[] { _chosenCardValue.ToString() });
 			PrintDebug("The deck being created is: {0}", new string[] { "EXODIA!" });
 
@@ -199,7 +207,7 @@ public class DeckCreatingScript : MonoBehaviour {
 			_chosenCardValue = _valuesTable[top][bot];
 		} else if (_bomb.GetOffIndicators().Count() == _bomb.GetOnIndicators().Count()) {
 			top = ((_bomb.GetBatteryCount() * (_bomb.GetPortCount() + _bomb.GetPortPlateCount())) % 4);
-			bot = 0;
+			bot = 1;
 			_chosenCardValue = _valuesTable[top][bot];
 		}
 		PrintDebug("The chosen value (from table 1) is: {0} (Row = {1}, Column = {2}).", new object[] { _chosenCardValue.ToString(), top, bot });
@@ -208,7 +216,6 @@ public class DeckCreatingScript : MonoBehaviour {
 
 	void GenerateDeck() {
 		_chosenCardDeck = _deckTable[Array.IndexOf(_games, _chosenCardName)][Array.IndexOf(_valueArray, _chosenCardValue)];
-		GetSpriteSize();
 		switch (_chosenCardDeck) {
 			case "Aviana Druid":
 				_chosenDeckSprites = _avianaDruid;
@@ -496,11 +503,12 @@ public class DeckCreatingScript : MonoBehaviour {
 			}
 			yield return new WaitForSeconds(0.1f);
 		}
-		StartCoroutine(GenerateNewCards());
+		StartCoroutine(GenerateNewSet());
 		int count = 0;
 		foreach (KMSelectable km in _cardSelectors) {
 			if (count == 3) { km.Highlight.gameObject.SetActive(true); continue; }
 			km.GetComponent<Renderer>().transform.localScale = GetButtonSize();
+			km.GetComponent<Renderer>().enabled = true;
 			km.Highlight.gameObject.SetActive(true);
 			count++;
 		}
@@ -523,60 +531,74 @@ public class DeckCreatingScript : MonoBehaviour {
 		yield break;
 	}
 
-	IEnumerator GenerateNewCards() {
-		int rand = rnd.Range(0, _chosenDeckArray.Length);
+	IEnumerator GenerateNewSet() {
+		_isAnimating = true;
+		if (_notFirst) {
+			yield return new WaitForSeconds(0.3f);
+		}
 		if (_chosenDeckArray.All(x => x == 0)) {
 			GetComponent<KMBombModule>().HandlePass();
+			_cardName.text = "";
 			_modSolved = true;
 			PrintDebug("All correct cards have been selected. Module Solved{0}", new object[] { "." });
 			StartCoroutine(FlipCards());
+			_isAnimating = false;
 			yield break;
 		}
-		while (_chosenDeckArray[rand] == 0) {
-			rand = rnd.Range(0, _chosenDeckArray.Length);
+		Sprite[] selectedCards = new Sprite[3];
+		Sprite[] rendererCards = new Sprite[3];
+		int generateCard = rnd.Range(0, _chosenDeckArray.Length);
+		while (_chosenDeckArray[generateCard] == 0) {
+			generateCard = rnd.Range(0, _chosenDeckArray.Length);
 		}
-		_chosenDeckArray[rand]--;
-		int rPos = rnd.Range(0, 3);
-		bool[] cPos = new bool[3];
-		cPos[rPos] = true;
-		_cardRenderers[rPos].sprite = _chosenDeckSprites[rand];
-		_correctCard = rPos;
-		List<Sprite> sprites = new List<Sprite>();
-		List<int> indices = new List<int>();
+		selectedCards[0] = _chosenDeckSprites[generateCard];
+		_chosenDeckArray[generateCard]--;
+		for (int i = 1; i <= 2; i++) {
+			List<Sprite> randomSprites = GetDeckFromGame(rnd.Range(0, 4)).ToList();
+			for (int z = 0; z <= _chosenDeckSprites.Length - 1; z++) {
+				if (_chosenDeckArray[z] != 0) continue;
+				randomSprites.Add(_chosenDeckSprites[z]);
+			}
+			Sprite chosen = randomSprites[rnd.Range(0, randomSprites.Count())];
+			while (selectedCards[0].name == chosen.name || _chosenDeckSprites.Any(x => x.name == chosen.name)) {
+				chosen = randomSprites[rnd.Range(0, randomSprites.Count())];
+			}
+			selectedCards[i] = chosen;
+		}
+		bool[] usedPos = new bool[3];
+		bool[] usedCard = new bool[3];
+		int pos = rnd.Range(0, 3);
+		int card = rnd.Range(0, 3);
+		foreach (SpriteRenderer sr in _cardRenderers) {
+			sr.sprite = null;
+			sr.transform.localScale = GetSpriteSize();
+		}
 		for (int i = 0; i <= 2; i++) {
-			if (cPos[i]) { continue; }
-			sprites.Clear();
-			indices.Clear();
-			indices.Add(rand);
-			cPos[i] = true;
-			Sprite[] randomSpr = GetDeckFromGame(rnd.Range(0, 4));
-			int counter = 0;
-			foreach (int x in _chosenDeckArray) {
-				if (x == 0) {
-					if (indices.Contains(counter)) {
-						continue;
-					}
-					sprites.Add(_chosenDeckSprites[counter]);
-					indices.Add(counter);
-				}
-				counter++;
+			while (usedPos[pos]) {
+				pos = rnd.Range(0, 3);
 			}
-			foreach (Sprite s in randomSpr) {
-				if (_chosenDeckSprites.Any(x => x.name.Equals(s.name))) { continue; }
-				if (sprites.Any(x => x.name.Equals(s.name))) { continue; }
-				sprites.Add(s);
+			while (usedCard[card]) {
+				card = rnd.Range(0, 3);
 			}
-			_cardRenderers[i].sprite = sprites.ElementAt(rnd.Range(0, sprites.Count));
+			_cardRenderers[pos].sprite = selectedCards[card];
+			usedPos[pos] = true;
+			usedCard[card] = true;
+			rendererCards[pos] = selectedCards[card];
+			yield return new WaitForSeconds(0.3f);
 		}
-		PrintDebug("Out of cards on set {0}, the correct card is {1} ({2}).", new object[] { _cardSet + 1, rPos + 1, _chosenDeckSprites[rand].name });
-		_cardCounter.text = (_cardSet + 1).ToString();
+		_correctCard = Array.IndexOf(rendererCards, selectedCards[0]);
+		PrintDebug("Out of cards on set {0}, the correct card is {1} ({2}).", new object[] { _cardSet + 1, _correctCard + 1, rendererCards[_correctCard].name });
 		_cardSet++;
+		_cardCounter.text = _cardSet.ToString();
+		_isAnimating = false;
 		yield break;
 	}
 
 	IEnumerator FlipCards() {
 		foreach (KMSelectable km in _cardSelectors) {
 			km.Highlight.gameObject.SetActive(false);
+			if (Array.IndexOf(_cardSelectors, km) == 3) continue;
+			km.GetComponent<Renderer>().enabled = false;
 		}
 		foreach (SpriteRenderer sr in _cardRenderers) {
 			sr.sprite = _cardBackings[_chosenCardGame];
@@ -617,7 +639,7 @@ public class DeckCreatingScript : MonoBehaviour {
 				_cardSelectors[3].OnInteract();
 				break;
 			case "names":
-				yield return "sendtochat The names from left to right are: " + _cardRenderers[0].name + ", " + _cardRenderers[1].name + " and " + _cardRenderers[2].name;
+				yield return "sendtochat The names from left to right are: " + _cardRenderers[0].sprite.name + ", " + _cardRenderers[1].sprite.name + " and " + _cardRenderers[2].sprite.name;
 				break;
 			default:
 				yield return "sendtochaterror Invalid command.";

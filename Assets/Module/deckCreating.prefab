@@ -409,7 +409,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1591207610182698}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.0549, y: 0.015, z: 0}
+  m_LocalPosition: {x: -0.0549, y: 0.016000003, z: 0}
   m_LocalScale: {x: 0.035, y: 0.001, z: 0.05}
   m_Children:
   - {fileID: 4389711964521842}
@@ -469,7 +469,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1168109596130332}
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0.0601, y: 0.013, z: 0}
+  m_LocalPosition: {x: 0.0601, y: 0.014, z: 0}
   m_LocalScale: {x: 0.019, y: 0.019, z: 1}
   m_Children: []
   m_Father: {fileID: 4703035148992182}
@@ -500,7 +500,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1500408740083014}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.0597, y: 0.014999999, z: 0}
+  m_LocalPosition: {x: 0.0597, y: 0.016, z: 0}
   m_LocalScale: {x: 0.035, y: 0.001, z: 0.05}
   m_Children:
   - {fileID: 4421913022115170}
@@ -623,7 +623,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1356810992805212}
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0.0025, y: 0.013, z: 0}
+  m_LocalPosition: {x: 0.0025, y: 0.014, z: 0}
   m_LocalScale: {x: 0.02, y: 0.02, z: 1}
   m_Children: []
   m_Father: {fileID: 4703035148992182}
@@ -649,7 +649,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1365480069524180}
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: -0.0549, y: 0.013, z: 0}
+  m_LocalPosition: {x: -0.0549, y: 0.014, z: -0}
   m_LocalScale: {x: 0.023, y: 0.023, z: 1}
   m_Children: []
   m_Father: {fileID: 4703035148992182}
@@ -662,7 +662,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1928049691439438}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.0025, y: 0.014999999, z: 0}
+  m_LocalPosition: {x: 0.0025, y: 0.016, z: 0}
   m_LocalScale: {x: 0.035, y: 0.001, z: 0.05}
   m_Children:
   - {fileID: 4030141675971364}
@@ -1611,7 +1611,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShaderNames:
-  - GUI/KT 3D Text
+  - GUI/Text Shader
 --- !u!114 &114666276681134874
 MonoBehaviour:
   m_ObjectHideFlags: 1
