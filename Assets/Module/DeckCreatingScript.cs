@@ -53,33 +53,34 @@ public class DeckCreatingScript : MonoBehaviour {
 
 	float _chosenCardValue = 0;
 
-	string _chosenCardName = "";
+	string _chosenCardGameName = "";
 	string _chosenCardDeck = "";
 
 	bool timer;
 	bool _isAnimating;
 	bool _starting;
 	bool _notFirst;
+	bool _chosenGame = false;
 
 	int[][] _deckCards = new int[][]
 	{
-		// Hearthstone
-		new int[] { 1, 1, 2, 2, 1, 2, 1, 1, 2, 1, 2, 1, 2, 2, 2, 2, 2, 2, 1 }, // Aviana Druid 30
-		new int[] { 1, 1, 2, 1, 1, 2, 2, 2, 1, 1, 2, 2, 2, 1, 1, 1, 2, 2, 2, 1 }, // Control Warrior 30
-		new int[] { 2, 2, 2, 2, 1, 2, 2, 1, 2, 2, 1, 1, 2, 2, 2, 2, 2 }, // Face Hunter 30
-		new int[] { 2, 2, 1, 2, 2, 1, 2, 2, 2, 1, 2, 2, 2, 2, 2, 1, 2 }, // Miracle Rogue 30
-		// MTG
-		new int[] { 1, 1, 1, 2, 2, 13, 1, 1, 1, 1, 1, 1, 2, 1, 1 }, // Blue 30
-		new int[] { 1, 1, 2, 13, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 2 }, // Green 30
-		new int[] { 2, 1, 1, 1, 2, 1, 1, 13, 1, 2, 1, 2, 2 }, // Red 30
-		new int[] { 1, 1, 1, 2, 1, 1, 1, 2, 1, 13, 1, 2, 1, 1, 1 }, // White 30
-		// Pokemon
-		new int[] { 1, 2, 1, 2, 1, 5, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 2, 5 }, // Torchic missing fire energy
-		new int[] { 2, 1, 1, 1, 1, 2, 1, 2, 1, 1, 1, 1, 1, 5, 2, 1, 1, 5 }, // Mudkip 30
-		new int[] { 1, 1, 1, 5, 1, 5, 1, 2, 1, 2, 1, 1, 1, 1, 1, 2, 1, 2 }, // Flygon 30
+		// Hearthstone 0-3
+		new int[] { 1, 1, 2, 2, 1, 2, 1, 1, 2, 1, 2, 1, 2, 2, 2, 2, 2, 2, 1 }, // Aviana Druid
+		new int[] { 1, 1, 2, 1, 1, 2, 2, 2, 1, 1, 2, 2, 2, 1, 1, 1, 2, 2, 2, 1 }, // Control Warrior
+		new int[] { 2, 2, 2, 2, 1, 2, 2, 1, 2, 2, 1, 1, 2, 2, 2, 2, 2 }, // Face Hunter
+		new int[] { 2, 2, 1, 2, 2, 1, 2, 2, 2, 1, 2, 2, 2, 2, 2, 1, 2 }, // Miracle Rogue
+		// MTG 4-7
+		new int[] { 1, 1, 1, 2, 2, 13, 1, 1, 1, 1, 1, 1, 2, 1, 1 }, // Blue
+		new int[] { 1, 1, 2, 13, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 2 }, // Green
+		new int[] { 2, 1, 1, 1, 2, 1, 1, 13, 1, 2, 1, 2, 2 }, // Red
+		new int[] { 1, 1, 1, 2, 1, 1, 1, 2, 1, 13, 1, 2, 1, 1, 1 }, // White
+		// Pokemon 8-11
+		new int[] { 1, 2, 1, 2, 1, 5, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 2, 5 }, // Torchic
+		new int[] { 2, 1, 1, 1, 1, 2, 1, 2, 1, 1, 1, 1, 1, 5, 2, 1, 1, 5 }, // Mudkip
+		new int[] { 1, 1, 1, 5, 1, 5, 1, 2, 1, 2, 1, 1, 1, 1, 1, 2, 1, 2 }, // Flygon
 		new int[] { 1, 1, 1, 5, 5, 2, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 2, 2 }, // Treecko
-		// Extra
-		new int[] { 2, 2, 2, 1, 2, 2, 2, 1, 2, 2, 1, 2, 1, 2, 2, 2, 2 } // Exodia Mage 26 2 missing pic research ice block
+		// Extra 12
+		new int[] { 2, 2, 2, 1, 2, 2, 2, 1, 2, 2, 1, 2, 1, 2, 2, 2, 2 } // Exodia Mage
 	};
 
 	float[][] _valuesTable = new float[][]
@@ -114,7 +115,6 @@ public class DeckCreatingScript : MonoBehaviour {
 	void Start() {
 		StartCoroutine(DisableHighlights());
 		StartModule();
-		GetSumOfSNum();
 	}
 
 	void CardCheck(KMSelectable button) {
@@ -162,60 +162,125 @@ public class DeckCreatingScript : MonoBehaviour {
 
 	void StartModule() {
 		int chosen = rnd.Range(0, 3);
-		_chosenCardGame = chosen;
-		_chosenCardName = _games[_chosenCardGame];
-		PrintDebug("The chosen card game is: {0}.", new string[] { _games[_chosenCardGame] });
-		// Show randomizing cards here for a little
-		GenerateValue();
+		if (!_chosenGame) 
+		{
+			
+			
+
+			
+			if (_bomb.GetBatteryCount() == _bomb.GetBatteryHolderCount() && _bomb.GetOnIndicators().Any(x => x == "BOB"))
+			{
+				_chosenCardGame = 0;
+				_chosenCardGameName = _games[_chosenCardGame];
+				_chosenCardDeck = "Exodia Mage";
+				_chosenDeckSprites = _exodiaMage;
+				_chosenDeckIndex = 12;
+				_chosenDeckArray = _deckCards[_chosenDeckIndex];
+				PrintDebug("The selected card game is {0}.", new string[] { _games[_chosenCardGame] });
+				PrintDebug("Bob is here to show you how to build the Exodia Mage deck. But, careful he has limited batteries{0}", new object[] { "." });
+				StartCoroutine(RandomizeCards());
+				return;
+			}
+			else 
+			{
+				_chosenCardGame = chosen;
+				_chosenCardGameName = _games[_chosenCardGame];
+				GenerateValue();
+				PrintDebug("The selected card game is {0}.", new string[] { _games[_chosenCardGame] });
+			}
+			
+			_chosenGame = true;
+		}
 		StartCoroutine(RandomizeCards());
 	}
 
 	void GenerateValue() {
-		if ((_bomb.GetBatteryCount() == _bomb.GetBatteryHolderCount()) && _bomb.GetIndicators().Any(x => x.Equals("BOB"))) {
-			_chosenCardDeck = "Exodia Mage";
-			_chosenCardGame = 0;
-			_chosenDeckSprites = _exodiaMage;
-			_chosenCardValue = 42069;
-			_chosenDeckArray = _deckCards[12];
-			_chosenDeckIndex = 12;
-			if (_chosenCardName != "Hearthstone") {
-				PrintDebug("The chosen game has been changed to: Heartstone{0}", new object[] { "." });
-				_chosenCardName = "Hearthstone";
-			}
-			PrintDebug("The chosen value is: {0}.", new string[] { _chosenCardValue.ToString() });
-			PrintDebug("The deck being created is: {0}", new string[] { "EXODIA!" });
+		int rule = GetIndicatorRule();
 
-			return;
+		string[][] logs = new string[][]
+		{
+			new string[] { "more unlit indicators than lit indicators." },
+			new string[] { "more lit indicators than unlit indicators." },
+			new string[] { "an equal amount of indicators." }
+		};
+
+		PrintDebug("There is {0}", logs[rule]);
+
+		int row = 0;
+		int col = 0;
+
+		char[] alphabet = Enumerable.Range(0, 26).Select(x => (char)(x + 'A')).ToArray();
+
+		switch (rule) 
+		{
+			case 0: // unlit > lit
+				switch (_chosenCardGameName) 
+				{
+					case "Hearthstone":
+						row = _bomb.GetBatteryCount() + _bomb.GetSerialNumberNumbers().Last();
+						col = (_bomb.GetPortPlateCount() + _bomb.GetPortCount()) * _bomb.GetSerialNumberNumbers().First();
+						break;
+					case "Magic The Gathering":
+						row = Array.IndexOf(alphabet, _bomb.GetSerialNumberLetters().First()) + 1;
+						col = Array.IndexOf(alphabet, _bomb.GetSerialNumberLetters().Last()) + 1;
+						break;
+					case "Pokemon":
+						row = _bomb.GetSerialNumberNumbers().Sum();
+						col = _bomb.GetSolvableModuleIDs().Count();
+						break;
+					default:
+						break;
+				}
+				break;
+			case 1: // unlit < lit
+				switch (_chosenCardGameName)
+				{
+					case "Hearthstone":
+						row = _bomb.GetPortCount() + _bomb.GetSerialNumberNumbers().Last();
+						col = (_bomb.GetBatteryHolderCount() + _bomb.GetBatteryCount()) * _bomb.GetSerialNumberNumbers().First();
+						break;
+					case "Magic The Gathering":
+						row = _bomb.GetOnIndicators().Count();
+						col = _bomb.GetOffIndicators().Count();
+						break;
+					case "Pokemon":
+						row = _bomb.GetSerialNumberLetters().Select(x => Array.IndexOf(alphabet, x)+1).Sum();
+						col = _bomb.GetSolvedModuleIDs().Count();
+						break;
+					default:
+						break;
+				}
+				break;
+			default: // lit == unlit
+				switch (_chosenCardGameName)
+				{
+					case "Hearthstone":
+						row = _bomb.GetBatteryHolderCount() + _bomb.GetSerialNumberNumbers().Last();
+						col = (_bomb.GetIndicators().Count()) * _bomb.GetSerialNumberNumbers().First();
+						break;
+					case "Magic The Gathering":
+						row = (_bomb.GetPortCount(Port.Serial)+_bomb.GetPortCount(Port.Parallel)+_bomb.GetPortCount(Port.StereoRCA)) * (_bomb.GetBatteryCount() + _bomb.GetBatteryHolderCount());
+						col = (_bomb.GetPortCount(Port.RJ45) + _bomb.GetPortCount(Port.DVI) + _bomb.GetPortCount(Port.PS2)) * _bomb.GetIndicators().Count();
+						break;
+					case "Pokemon":
+						row = _bomb.GetSerialNumberNumbers().Sum() + _bomb.GetSerialNumberLetters().Select(x => Array.IndexOf(alphabet, x) + 1).Sum();
+						col = _bomb.GetSolvableModuleIDs().Count() - _bomb.GetSolvedModuleIDs().Count();
+						break;
+					default:
+						break;
+				}
+				break;
 		}
-		int top = 0;
-		int bot = 0;
-		if (_bomb.GetOffIndicators().Count() > _bomb.GetOnIndicators().Count()) {
-			if (_bomb.GetSerialNumberLetters().Count() == 0) {
-				top = 1 * _bomb.GetOffIndicators().Count();
-			} else {
-				top = AlphaPosition(_bomb.GetSerialNumberLetters().Last()) * _bomb.GetOffIndicators().Count();
-			}
-			if (_bomb.GetPortCount(Port.StereoRCA) >= 1 && _bomb.GetPortCount(Port.Serial) == 0) {
-				top *= 2;
-			}
-			top %= 4;
-			bot = (GetSumOfSNum() % 4);
-			_chosenCardValue = _valuesTable[top][bot];
-		} else if (_bomb.GetOffIndicators().Count() < _bomb.GetOnIndicators().Count()) {
-			top = ((_bomb.GetOnIndicators().Count() + _bomb.GetPortPlateCount() + 6) % 4);
-			bot = ((IndiInString(_chosenCardName, true) + IndiInString(_chosenCardName, false) + _bomb.GetBatteryCount() + (ModuleOnBomb("monsplodeCards") || ModuleOnBomb("monsplodeFight") ? 13 : 0)) % 4);
-			_chosenCardValue = _valuesTable[top][bot];
-		} else if (_bomb.GetOffIndicators().Count() == _bomb.GetOnIndicators().Count()) {
-			top = ((_bomb.GetBatteryCount() * (_bomb.GetPortCount() + _bomb.GetPortPlateCount())) % 4);
-			bot = 1;
-			_chosenCardValue = _valuesTable[top][bot];
-		}
-		PrintDebug("The chosen value (from table 1) is: {0} (Row = {1}, Column = {2}).", new object[] { _chosenCardValue.ToString(), top, bot });
+
+		_chosenCardValue = _valuesTable[row%4][col%4];
+
+		PrintDebug("The chosen value is {0}. The row is {1} ({2} after modulo + 1). The column is {3} ({4} after modulo + 1).", new object[] { _chosenCardValue, row, (row%4)+1, col, (col%4)+1, });
+
 		GenerateDeck();
 	}
 
 	void GenerateDeck() {
-		_chosenCardDeck = _deckTable[Array.IndexOf(_games, _chosenCardName)][Array.IndexOf(_valueArray, _chosenCardValue)];
+		_chosenCardDeck = _deckTable[Array.IndexOf(_games, _chosenCardGameName)][Array.IndexOf(_valueArray, _chosenCardValue)];
 		switch (_chosenCardDeck) {
 			case "Aviana Druid":
 				_chosenDeckSprites = _avianaDruid;
@@ -270,6 +335,11 @@ public class DeckCreatingScript : MonoBehaviour {
 		}
 		_chosenDeckArray = _deckCards[_chosenDeckIndex];
 		PrintDebug("The deck being created (from table 2) is: {0}.", new string[] { _chosenCardDeck });
+	}
+
+	int GetIndicatorRule() 
+	{
+		return _bomb.GetOffIndicators().Count() > _bomb.GetOnIndicators().Count() ? 0 : _bomb.GetOffIndicators().Count() < _bomb.GetOnIndicators().Count() ? 1 : 2;
 	}
 
 	Sprite[] GetDeck(int id) {
@@ -341,7 +411,7 @@ public class DeckCreatingScript : MonoBehaviour {
 	}
 
 	Sprite[] GetDeckFromGame(int id) {
-		switch (_chosenCardName) {
+		switch (_chosenCardGameName) {
 			case "Hearthstone":
 				if (id == _chosenDeckIndex) {
 					if (id + 1 >= 4) {
@@ -413,56 +483,8 @@ public class DeckCreatingScript : MonoBehaviour {
 		}
 	}
 
-	int IndiInString(string s, bool on) {
-		int count = 0;
-		if (on) {
-			foreach (string indi in _bomb.GetOnIndicators()) {
-				List<char> chars = s.ToCharArray().ToList();
-				foreach (char c in indi) {
-					if (chars.Contains(c)) {
-						count++;
-						break;
-					}
-				}
-			}
-			return count;
-		}
-		foreach (string indi in _bomb.GetOffIndicators()) {
-			List<char> chars = s.ToCharArray().ToList();
-			foreach (char c in indi) {
-				if (chars.Contains(c)) {
-					count++;
-					break;
-				}
-			}
-		}
-		return count;
-	}
-
-	bool ModuleOnBomb(string id) {
-		if (_bomb.GetModuleIDs().Contains(id)) {
-			return true;
-		}
-		return false;
-	}
-
 	void PrintDebug(string s, object[] args) {
 		Debug.LogFormat("[Deck Creating #{0}]: {1}", _modID, String.Format(s, args));
-	}
-
-	int AlphaPosition(char c) {
-		return "abcdefghijklmnopqrstuvwxyz".IndexOf(c.ToString().ToLowerInvariant()) + 1;
-	}
-
-	int GetSumOfSNum() {
-		int total = 0;
-		foreach (char c in _bomb.GetSerialNumberLetters()) {
-			total += AlphaPosition(c.ToString().ToLower().ToCharArray()[0]);
-		}
-		foreach (int i in _bomb.GetSerialNumberNumbers()) {
-			total += i;
-		}
-		return total;
 	}
 
 	string GetPositionOfNum(int index) {
@@ -531,12 +553,15 @@ public class DeckCreatingScript : MonoBehaviour {
 		yield break;
 	}
 
-	IEnumerator GenerateNewSet() {
+	IEnumerator GenerateNewSet()
+	{
 		_isAnimating = true;
-		if (_notFirst) {
+		if (_notFirst)
+		{
 			yield return new WaitForSeconds(0.3f);
 		}
-		if (_chosenDeckArray.All(x => x == 0)) {
+		if (_chosenDeckArray.All(x => x == 0))
+		{
 			GetComponent<KMBombModule>().HandlePass();
 			_cardName.text = "";
 			_modSolved = true;
@@ -548,19 +573,23 @@ public class DeckCreatingScript : MonoBehaviour {
 		Sprite[] selectedCards = new Sprite[3];
 		Sprite[] rendererCards = new Sprite[3];
 		int generateCard = rnd.Range(0, _chosenDeckArray.Length);
-		while (_chosenDeckArray[generateCard] == 0) {
+		while (_chosenDeckArray[generateCard] == 0)
+		{
 			generateCard = rnd.Range(0, _chosenDeckArray.Length);
 		}
 		selectedCards[0] = _chosenDeckSprites[generateCard];
 		_chosenDeckArray[generateCard]--;
-		for (int i = 1; i <= 2; i++) {
+		for (int i = 1; i <= 2; i++)
+		{
 			List<Sprite> randomSprites = GetDeckFromGame(rnd.Range(0, 4)).ToList();
-			for (int z = 0; z <= _chosenDeckSprites.Length - 1; z++) {
+			for (int z = 0; z <= _chosenDeckSprites.Length - 1; z++)
+			{
 				if (_chosenDeckArray[z] != 0) continue;
 				randomSprites.Add(_chosenDeckSprites[z]);
 			}
 			Sprite chosen = randomSprites[rnd.Range(0, randomSprites.Count())];
-			while (selectedCards[0].name == chosen.name || _chosenDeckSprites.Any(x => x.name == chosen.name)) {
+			while (selectedCards[0].name == chosen.name || _chosenDeckSprites.Any(x => x.name == chosen.name))
+			{
 				chosen = randomSprites[rnd.Range(0, randomSprites.Count())];
 			}
 			selectedCards[i] = chosen;
@@ -569,15 +598,19 @@ public class DeckCreatingScript : MonoBehaviour {
 		bool[] usedCard = new bool[3];
 		int pos = rnd.Range(0, 3);
 		int card = rnd.Range(0, 3);
-		foreach (SpriteRenderer sr in _cardRenderers) {
+		foreach (SpriteRenderer sr in _cardRenderers)
+		{
 			sr.sprite = null;
 			sr.transform.localScale = GetSpriteSize();
 		}
-		for (int i = 0; i <= 2; i++) {
-			while (usedPos[pos]) {
+		for (int i = 0; i <= 2; i++)
+		{
+			while (usedPos[pos])
+			{
 				pos = rnd.Range(0, 3);
 			}
-			while (usedCard[card]) {
+			while (usedCard[card])
+			{
 				card = rnd.Range(0, 3);
 			}
 			_cardRenderers[pos].sprite = selectedCards[card];
@@ -615,9 +648,11 @@ public class DeckCreatingScript : MonoBehaviour {
 		string[] split = command.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 		if (!split[0].ToLower().EqualsAny("card", "reset", "names")) {
 			yield return "sendtochaterror Invalid sub command.";
+			yield break;
 		}
 		if (split[0].ToLower().Equals("card") && split.Length != 2) {
 			yield return "sendtochaterror Invalid argument size.";
+			yield break;
 		}
 		switch (split[0].ToLower()) {
 			case "card":
@@ -628,11 +663,12 @@ public class DeckCreatingScript : MonoBehaviour {
 				}
 				result = int.Parse(split[1]);
 				if (!result.EqualsAny(1, 2, 3)) {
-					yield return "sendtochaterror Invalid position";
+					yield return "sendtochaterror Invalid position.";
 					break;
 				}
 				yield return null;
 				_cardSelectors[result - 1].OnInteract();
+				yield return "solve";
 				break;
 			case "reset":
 				yield return null;
@@ -650,11 +686,12 @@ public class DeckCreatingScript : MonoBehaviour {
 
 	IEnumerator TwitchHandleForcedSolve() {
 		yield return null;
-		while (_cardSet != 29) {
-			if (_isAnimating) { continue; }
+		while (_cardSet != 31) {
+			if (_isAnimating) { yield return true; continue; }
 			_cardSelectors[_correctCard].OnInteract();
 			yield return new WaitForSeconds(0.5f);
 		}
 		yield break;
 	}
+
 }

@@ -14,11 +14,11 @@ MonoBehaviour:
   id: kataDeckCreating
   title: Deck Creating
   author: Katarina
-  description: "Deck Creating v1.7\n\u201CWhy are you trying to make the lastest meta
+  description: "Deck Creating v2.0\n\u201CWhy are you trying to make the latest meta
     deck? We\u2019re defusing a bomb!!\u201D\n\nModule Idea by: SuDo\nImplemented
     by: Kat(arina)\n\nModule Id: kataDeckCreating\n\nTP-Supported.\n\nHTML Manual
     Version:\r\nhttps://ktane.timwi.de/HTML/Deck%20Creating.html\r\n\r\nIf there are
-    any problems that you may have, contact me via Discord: Smexy Ahri#5259\n"
-  version: 1.7
+    any problems that you may have, contact me via Discord: Smexy Ahri#5259"
+  version: 2.0
   outputFolder: build
   previewImage: {fileID: 2800000, guid: 73d41ac78313b424286c7de67096066b, type: 3}
