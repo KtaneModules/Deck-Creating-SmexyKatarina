@@ -162,12 +162,8 @@ public class DeckCreatingScript : MonoBehaviour {
 
 	void StartModule() {
 		int chosen = rnd.Range(0, 3);
-		if (!_chosenGame) 
+		if (!_chosenGame)
 		{
-			
-			
-
-			
 			if (_bomb.GetBatteryCount() == _bomb.GetBatteryHolderCount() && _bomb.GetOnIndicators().Any(x => x == "BOB"))
 			{
 				_chosenCardGame = 0;
@@ -181,15 +177,19 @@ public class DeckCreatingScript : MonoBehaviour {
 				StartCoroutine(RandomizeCards());
 				return;
 			}
-			else 
+			else
 			{
 				_chosenCardGame = chosen;
 				_chosenCardGameName = _games[_chosenCardGame];
 				GenerateValue();
 				PrintDebug("The selected card game is {0}.", new string[] { _games[_chosenCardGame] });
 			}
-			
+
 			_chosenGame = true;
+		}
+		else 
+		{
+			GenerateValue();
 		}
 		StartCoroutine(RandomizeCards());
 	}
@@ -588,7 +588,7 @@ public class DeckCreatingScript : MonoBehaviour {
 				randomSprites.Add(_chosenDeckSprites[z]);
 			}
 			Sprite chosen = randomSprites[rnd.Range(0, randomSprites.Count())];
-			while (selectedCards[0].name == chosen.name || _chosenDeckSprites.Any(x => x.name == chosen.name))
+			while (_chosenDeckSprites.Any(x => x.name == chosen.name) || selectedCards.Where(x => x != null).Any(x => x.name == chosen.name))
 			{
 				chosen = randomSprites[rnd.Range(0, randomSprites.Count())];
 			}
@@ -620,7 +620,7 @@ public class DeckCreatingScript : MonoBehaviour {
 			yield return new WaitForSeconds(0.3f);
 		}
 		_correctCard = Array.IndexOf(rendererCards, selectedCards[0]);
-		PrintDebug("Out of cards on set {0}, the correct card is {1} ({2}).", new object[] { _cardSet + 1, _correctCard + 1, rendererCards[_correctCard].name });
+		PrintDebug("Out of the cards on set {0}, the correct card is {1} ({2}).", new object[] { _cardSet + 1, _correctCard + 1, rendererCards[_correctCard].name });
 		_cardSet++;
 		_cardCounter.text = _cardSet.ToString();
 		_isAnimating = false;
