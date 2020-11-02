@@ -121,6 +121,7 @@ public class DeckCreatingScript : MonoBehaviour {
 		int index = Array.IndexOf(_cardSelectors, button);
 		if (index == 3) {
 			PrintDebug("Resetting module due to reset button being pressed{0}", new object[] { "." });
+			_chosenDeckArray = null;
 			StartModule();
 			_cardSet = 0;
 			_cardCounter.text = "";
@@ -129,6 +130,7 @@ public class DeckCreatingScript : MonoBehaviour {
 		if (index != _correctCard) {
 			PrintDebug("Unfortunately, {0}{1} ({2}) card is the incorrect card. Resetting...", new object[] { index + 1, GetPositionOfNum(index), _cardRenderers[index].sprite.name });
 			GetComponent<KMBombModule>().HandleStrike();
+			_chosenDeckArray = null;
 			StartModule();
 			_cardSet = 0;
 			return;
@@ -162,6 +164,7 @@ public class DeckCreatingScript : MonoBehaviour {
 
 	void StartModule() {
 		int chosen = rnd.Range(0, 3);
+		
 		if (!_chosenGame)
 		{
 			if (_bomb.GetBatteryCount() == _bomb.GetBatteryHolderCount() && _bomb.GetOnIndicators().Any(x => x == "BOB"))
@@ -333,7 +336,11 @@ public class DeckCreatingScript : MonoBehaviour {
 			default:
 				break;
 		}
-		_chosenDeckArray = _deckCards[_chosenDeckIndex];
+		_chosenDeckArray = new int[_deckCards[_chosenDeckIndex].Length];
+		for (int i = 0; i < _deckCards[_chosenDeckIndex].Length; i++) 
+		{
+			_chosenDeckArray[i] = _deckCards[_chosenDeckIndex][i];
+		}
 		PrintDebug("The deck being created (from table 2) is: {0}.", new string[] { _chosenCardDeck });
 	}
 
@@ -579,6 +586,7 @@ public class DeckCreatingScript : MonoBehaviour {
 		}
 		selectedCards[0] = _chosenDeckSprites[generateCard];
 		_chosenDeckArray[generateCard]--;
+		Debug.Log(_chosenDeckArray.Join(", "));
 		for (int i = 1; i <= 2; i++)
 		{
 			List<Sprite> randomSprites = GetDeckFromGame(rnd.Range(0, 4)).ToList();
