@@ -68,7 +68,7 @@ public class DeckCreatingScript : MonoBehaviour {
 		new int[] { 1, 1, 2, 2, 1, 2, 1, 1, 2, 1, 2, 1, 2, 2, 2, 2, 2, 2, 1 }, // Aviana Druid
 		new int[] { 1, 1, 2, 1, 1, 2, 2, 2, 1, 1, 2, 2, 2, 1, 1, 1, 2, 2, 2, 1 }, // Control Warrior
 		new int[] { 2, 2, 2, 2, 1, 2, 2, 1, 2, 2, 1, 1, 2, 2, 2, 2, 2 }, // Face Hunter
-		new int[] { 2, 2, 1, 2, 2, 1, 2, 2, 2, 1, 2, 2, 2, 2, 2, 1, 2 }, // Miracle Rogue
+		new int[] { 2, 2, 1, 2, 2, 1, 2, 2, 2, 1, 2, 2, 2, 2, 2, 1, 2 }, // Miracle Rogue 
 		// MTG 4-7
 		new int[] { 1, 1, 1, 2, 2, 13, 1, 1, 1, 1, 1, 1, 2, 1, 1 }, // Blue
 		new int[] { 1, 1, 2, 13, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 2 }, // Green
@@ -76,7 +76,7 @@ public class DeckCreatingScript : MonoBehaviour {
 		new int[] { 1, 1, 1, 2, 1, 1, 1, 2, 1, 13, 1, 2, 1, 1, 1 }, // White
 		// Pokemon 8-11
 		new int[] { 1, 2, 1, 2, 1, 5, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 2, 5 }, // Torchic
-		new int[] { 2, 1, 1, 1, 1, 2, 1, 2, 1, 1, 1, 1, 1, 5, 2, 1, 1, 5 }, // Mudkip
+		new int[] { 1, 1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 5, 2, 1, 2, 5 }, // Mudkip
 		new int[] { 1, 1, 1, 5, 1, 5, 1, 2, 1, 2, 1, 1, 1, 1, 1, 2, 1, 2 }, // Flygon
 		new int[] { 1, 1, 1, 5, 5, 2, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 2, 2 }, // Treecko
 		// Extra 12
@@ -125,6 +125,7 @@ public class DeckCreatingScript : MonoBehaviour {
 			StartModule();
 			_cardSet = 0;
 			_cardCounter.text = "";
+			_cardName.text = "";
 			return;
 		}
 		if (index != _correctCard) {
@@ -133,6 +134,8 @@ public class DeckCreatingScript : MonoBehaviour {
 			_chosenDeckArray = null;
 			StartModule();
 			_cardSet = 0;
+			_cardName.text = "";
+			_cardCounter.text = "";
 			return;
 		}
 		PrintDebug("Correct card selected, generating new set of cards{0}", new object[] { "." });
@@ -586,7 +589,7 @@ public class DeckCreatingScript : MonoBehaviour {
 		}
 		selectedCards[0] = _chosenDeckSprites[generateCard];
 		_chosenDeckArray[generateCard]--;
-		Debug.Log(_chosenDeckArray.Join(", "));
+
 		for (int i = 1; i <= 2; i++)
 		{
 			List<Sprite> randomSprites = GetDeckFromGame(rnd.Range(0, 4)).ToList();
