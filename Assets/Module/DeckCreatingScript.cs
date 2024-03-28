@@ -110,6 +110,10 @@ public class DeckCreatingScript : MonoBehaviour {
 				km.OnHighlightEnded += delegate () { if (_isAnimating || _modSolved) { return; } _cardName.text = ""; return; };
 			}
 		}
+		for (int x = 0; x < _deckCards.Length; x++) 
+		{
+			PrintDebug("{0}", new object[] {_deckCards[x].Sum()});
+		}
 	}
 
 	void Start() {
@@ -699,6 +703,7 @@ public class DeckCreatingScript : MonoBehaviour {
 		yield return null;
 		while (_cardSet != 31) {
 			if (_isAnimating) { yield return true; continue; }
+			if (_modSolved) break;
 			_cardSelectors[_correctCard].OnInteract();
 			yield return new WaitForSeconds(0.5f);
 		}
