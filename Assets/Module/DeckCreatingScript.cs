@@ -669,6 +669,7 @@ public class DeckCreatingScript : MonoBehaviour {
 			yield return "sendtochaterror Invalid argument size.";
 			yield break;
 		}
+		while (_isAnimating) yield return null;
 		switch (split[0].ToLower()) {
 			case "card":
 				int result;
